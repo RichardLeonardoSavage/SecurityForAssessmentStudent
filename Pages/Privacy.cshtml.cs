@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace SecurityForAssessmentStudent.Pages
 {
-    [Authorize (Roles = "Admin")]
+    [Authorize (Policy = "AdminPolicy")]
     public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;

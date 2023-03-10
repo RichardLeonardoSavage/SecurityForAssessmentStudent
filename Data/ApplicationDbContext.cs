@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SecurityForAssessmentStudent.Model;
 
 namespace SecurityForAssessmentStudent.Data
 {
@@ -9,5 +10,8 @@ namespace SecurityForAssessmentStudent.Data
             : base(options)
         {
         }
+
+        public DbSet<Movie> Movie { get; set; }
+        public DbSet<Cast> Cast { get; set; }
     }
 }
