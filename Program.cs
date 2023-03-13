@@ -2,7 +2,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecurityForAssessmentStudent.Data;
 
+var CORSAllowSpecificOrigins = "CORSAllowed";
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+//add CORS to project
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name :CORSAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000", "http://www.contoso.com");
+        });
+});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -41,8 +54,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 //The AddPolicy method takes the name of the policy, and an AuthosizationPolicyBuilder which has a RequireRole methpd, enaling us to state which roles are required.
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminPolicy", policyBuilder => policyBuilder.RequireRole("Admin"));
-    options.AddPolicy("AdminPolicy", policyBuilder => policyBuilder.RequireClaim("Admin"));
+    options.AddPolicy("RoleAdminPolicy", policyBuilder => policyBuilder.RequireRole("Admin"));
+    options.AddPolicy("ClaimAdminPolicy", policyBuilder => policyBuilder.RequireClaim("Admin"));
 
     //We use the RequireAssertion method, which takes an AuthorizationHandlerContext as a parameter providing access to the current user
     options.AddPolicy("ViewRolesPolicy", policyBuilder => policyBuilder.RequireAssertion(context =>
@@ -66,6 +79,8 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -88,10 +103,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors(CORSAllowSpecificOrigins);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapRazorPages();
+
+app.UseRouting();
 
 app.Run();
